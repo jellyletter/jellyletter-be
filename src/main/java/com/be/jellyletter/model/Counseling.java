@@ -14,13 +14,9 @@ public class Counseling {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "counseling_id")
-    private Integer counselingId;
+    private Integer id;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Builder
-    public Counseling(String content) {
-        this.content = content;
-    }
 }
