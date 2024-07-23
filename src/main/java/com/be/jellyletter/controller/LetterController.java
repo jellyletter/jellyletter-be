@@ -40,4 +40,11 @@ public class LetterController {
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
+
+    @GetMapping
+    public ResponseEntity<LetterResDto> getLetterByShareKey(@RequestParam(name = "shareKey") String shareKey) {
+        LetterResDto responseDto = letterService.getLetterByShareKey(shareKey);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 }

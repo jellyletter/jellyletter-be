@@ -35,4 +35,11 @@ public class LetterService {
 
         return LetterConverter.entityToDto(savedLetter);
     }
+
+    public LetterResDto getLetterByShareKey(String shareKey) {
+        Letter letter = letterRepository.findByShareKey(shareKey)
+                .orElseThrow(() -> new NoSuchElementException("Letter with ShareKey " + shareKey + " not found"));
+
+        return LetterConverter.entityToDto(letter);
+    }
 }
