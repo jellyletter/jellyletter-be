@@ -26,6 +26,13 @@ public class PetInfo {
     @Column(name = "code", nullable = false)
     private Integer code;
 
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "group_id", referencedColumnName = "group_id", insertable = false, updatable = false),
+            @JoinColumn(name = "code", referencedColumnName = "code", insertable = false, updatable = false)
+    })
+    private Info info;
+
     @Builder
     public PetInfo(Pet pet, String groupId, Integer code) {
         this.pet = pet;
@@ -33,7 +40,17 @@ public class PetInfo {
         this.code = code;
     }
 
+    @Builder
+    public PetInfo(String groupId, Integer code) {
+        this.groupId = groupId;
+        this.code = code;
+    }
+
     public void setPet(Pet pet) {
         this.pet = pet;
+    }
+
+    public String getCodeName() {
+        return this.info != null ? this.info.getCodeName() : null;
     }
 }

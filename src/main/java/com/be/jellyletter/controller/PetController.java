@@ -1,6 +1,7 @@
 package com.be.jellyletter.controller;
 
-import com.be.jellyletter.dto.PetDto;
+import com.be.jellyletter.dto.requestDto.PetReqDto;
+import com.be.jellyletter.dto.responseDto.PetResDto;
 import com.be.jellyletter.service.PetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ public class PetController {
     private final PetService petService;
 
     @PostMapping
-    public ResponseEntity<PetDto> createPet(@Valid @RequestBody PetDto petDto) {
-        PetDto responseDto = petService.createPet(petDto);
+    public ResponseEntity<PetResDto> createPet(@Valid @RequestBody PetReqDto petReqDto) {
+        PetResDto responseDto = petService.createPet(petReqDto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }

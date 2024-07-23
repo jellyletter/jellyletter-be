@@ -27,9 +27,8 @@ public class Letter {
     private String shareKey;
 
     @Builder
-    public Letter(Pet pet, String content, String shareKey) {
+    public Letter(Pet pet, String content) {
         this.pet = pet;
         this.content = content;
-        this.shareKey = shareKey;
     }
 }

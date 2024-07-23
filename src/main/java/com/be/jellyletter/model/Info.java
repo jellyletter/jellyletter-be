@@ -1,11 +1,12 @@
 package com.be.jellyletter.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Entity
 @Table(name = "info")
@@ -13,16 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Info {
 
-    @Id
-    @Column(name = "group_id", length = 5)
-    private String groupId;
+    @EmbeddedId
+    private InfoId id;
 
     @Column(name = "group_name", length = 100, nullable = false)
     private String groupName;
-
-    @Id
-    @Column(name = "code")
-    private Integer code;
 
     @Column(name = "code_name", length = 100, nullable = false)
     private String codeName;
@@ -33,4 +29,24 @@ public class Info {
     @Column(name = "use_yn", length = 1, nullable = false)
     private String useYn;
 
+    @Embeddable
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class InfoId implements Serializable {
+        @Column(name = "group_id")
+        private String groupId;
+
+        @Column(name = "code")
+        private Integer code;
+    }
+
+    @Builder
+    public Info(InfoId id, String groupName, String codeName, Integer orders, String useYn) {
+        this.id = id;
+        this.groupName = groupName;
+        this.codeName = codeName;
+        this.orders = orders;
+        this.useYn = useYn;
+    }
 }
