@@ -13,5 +13,6 @@ public class PetResDto {
     private Species species;
     private String ownerNickname;
     private String extraDesc;
+    private String imageUrl;
     private List<PetInfoResDto> petInfos;
 }

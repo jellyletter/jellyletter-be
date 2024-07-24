@@ -33,15 +33,19 @@ public class Pet {
     @Column(name = "extra_desc")
     private String extraDesc;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PetInfo> petInfos = new ArrayList<>();
 
     @Builder
-    public Pet(String name, Species species, String ownerNickname, String extraDesc) {
+    public Pet(String name, Species species, String ownerNickname, String extraDesc, String imageUrl) {
         this.name = name;
         this.species = species;
         this.ownerNickname = ownerNickname;
         this.extraDesc = extraDesc;
+        this.imageUrl = imageUrl;
     }
 
     public void addPetInfos(List<PetInfo> petInfos) {

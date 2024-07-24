@@ -14,6 +14,7 @@ public class PetConverter {
         dto.setSpecies(pet.getSpecies());
         dto.setOwnerNickname(pet.getOwnerNickname());
         dto.setExtraDesc(pet.getExtraDesc());
+        dto.setImageUrl(pet.getImageUrl());
 
         if (pet.getPetInfos() != null) {
             List<PetInfoResDto> petInfoDtos = pet.getPetInfos().stream()
