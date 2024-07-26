@@ -22,9 +22,11 @@ public class PetReqDto {
     @Schema(description = "반려동물 종", example = "CAT / DOG")
     private Species species;
 
-    @NotBlank(message = "Owner nickname cannot be blank")
-    @Schema(description = "주인을 부르는 호칭", example = "언니")
+    @Schema(description = "주인을 부르는 호칭(기존 옵션)", example = "언니")
     private String ownerNickname;
+
+    @Schema(description = "주인을 부르는 호칭(사용자 입력)", example = "언니")
+    private String specialOwnerNickname;
 
     @Schema(description = "추가 정보(옵션)", example = "언니")
     private String extraDesc;
@@ -36,10 +38,21 @@ public class PetReqDto {
     private List<PetInfoReqDto> petInfos;
 
     public Pet dtoToEntity() {
+        String finalOwnerNickName;
+
+        if (this.ownerNickname != null && !this.ownerNickname.isEmpty()) {
+            finalOwnerNickName = this.ownerNickname;
+        } else if (this.specialOwnerNickname != null && !this.specialOwnerNickname.isEmpty()) {
+            finalOwnerNickName = this.specialOwnerNickname;
+        } else {
+            // 두 필드 모두 값이 없는 경우 예외 처리나 기본값 설정
+            throw new IllegalArgumentException("Owner nickname/Special owner nickname cannot be null");
+        }
+
         Pet pet = Pet.builder()
                 .name(this.name)
                 .species(this.species)
-                .ownerNickname(this.ownerNickname)
+                .ownerNickname(finalOwnerNickName)
                 .extraDesc(this.extraDesc)
                 .imageUrl(this.imageUrl)
                 .build();
