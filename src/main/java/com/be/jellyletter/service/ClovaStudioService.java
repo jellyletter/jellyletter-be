@@ -39,7 +39,8 @@ public class ClovaStudioService {
         String clovaContent = convertPetInfoToClovaFormat(petDto);
         ArrayList<ClovaRequestMessage> messageList = getPromptMessagesBySpecies(petDto.getSpecies(), clovaContent);
         String result = sendRequestToClova(messageList);
-        return result;
+        String finalContent = removeTitleLine(result);
+        return finalContent;
     }
 
     private String convertPetInfoToClovaFormat(PetResDto petDto) {
@@ -199,4 +200,18 @@ public class ClovaStudioService {
 
         return content;
     }
+
+    private static String removeTitleLine(String content) {
+        String[] lines = content.split("\n");
+
+        if (lines.length > 0 && lines[0].startsWith("제목 :")) {
+            lines = java.util.Arrays.copyOfRange(lines, 1, lines.length);
+        }
+
+        String result = String.join("\n", lines);
+        result = result.strip();
+
+        return result;
+    }
+
 }
