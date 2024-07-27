@@ -13,7 +13,8 @@ public class PetConverter {
         dto.setName(pet.getName());
         dto.setSpecies(pet.getSpecies());
         dto.setOwnerNickname(pet.getOwnerNickname());
-        dto.setExtraDesc(pet.getExtraDesc());
+        dto.setToyAndTreat(pet.getToyAndTreat());
+        dto.setMemory(pet.getMemory());
         dto.setImageUrl(pet.getImageUrl());
 
         if (pet.getPetInfos() != null) {

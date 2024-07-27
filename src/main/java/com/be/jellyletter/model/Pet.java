@@ -30,8 +30,11 @@ public class Pet {
     @Column(name = "owner_nickname", nullable = false)
     private String ownerNickname;
 
-    @Column(name = "extra_desc")
-    private String extraDesc;
+    @Column(name = "toy_and_treat")
+    private String toyAndTreat;
+
+    @Column(name = "memory")
+    private String memory;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -40,11 +43,12 @@ public class Pet {
     private List<PetInfo> petInfos = new ArrayList<>();
 
     @Builder
-    public Pet(String name, Species species, String ownerNickname, String extraDesc, String imageUrl) {
+    public Pet(String name, Species species, String ownerNickname, String toyAndTreat, String memory, String imageUrl) {
         this.name = name;
         this.species = species;
         this.ownerNickname = ownerNickname;
-        this.extraDesc = extraDesc;
+        this.toyAndTreat = toyAndTreat;
+        this.memory = memory;
         this.imageUrl = imageUrl;
     }
 

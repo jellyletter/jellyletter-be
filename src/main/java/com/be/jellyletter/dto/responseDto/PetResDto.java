@@ -12,7 +12,8 @@ public class PetResDto {
     private String name;
     private Species species;
     private String ownerNickname;
-    private String extraDesc;
+    private String toyAndTreat;
+    private String memory;
     private String imageUrl;
     private List<PetInfoResDto> petInfos;
 }

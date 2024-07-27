@@ -52,7 +52,8 @@ public class ClovaStudioService {
         StringBuilder sb = new StringBuilder();
         sb.append("\n{{주인을 부르는 방식}}: ").append(petDto.getOwnerNickname());
         sb.append("\n{{이름}}: ").append(petDto.getName());
-        sb.append("\n{{좋아하는 것}}: ").append(petDto.getExtraDesc());
+        sb.append("\n{{좋아하는 간식이나 장난감}}: ").append(petDto.getToyAndTreat());
+        sb.append("\n{{특별한 추억}}: ").append(petDto.getMemory());
         sb.append("\n{{성격}}: ").append(characterString);
 
         return sb.toString();

@@ -28,8 +28,11 @@ public class PetReqDto {
     @Schema(description = "주인을 부르는 호칭(사용자 입력)", example = "언니")
     private String specialOwnerNickname;
 
-    @Schema(description = "추가 정보(옵션)", example = "언니")
-    private String extraDesc;
+    @Schema(description = "좋아하는 장난감이나 간식", example = "츄르")
+    private String toyAndTreat;
+
+    @Schema(description = "특별한 추억", example = "왕산 마리나에 가서 놀았던 날")
+    private String memory;
 
     @Schema(description = "반려동물 사진 url(백엔드에서 이미지 저장하고 넣을 값입니다. 빈 상태로 요청 주세요.)")
     private String imageUrl;
@@ -53,7 +56,8 @@ public class PetReqDto {
                 .name(this.name)
                 .species(this.species)
                 .ownerNickname(finalOwnerNickName)
-                .extraDesc(this.extraDesc)
+                .toyAndTreat(this.toyAndTreat)
+                .memory(this.memory)
                 .imageUrl(this.imageUrl)
                 .build();
 
