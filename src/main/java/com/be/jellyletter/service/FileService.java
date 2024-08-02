@@ -4,16 +4,17 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.be.jellyletter.converter.FileConverter;
+import com.be.jellyletter.dto.responseDto.FileResDto;
+import com.be.jellyletter.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,14 +26,21 @@ public class FileService {
     private String bucket;
 
     private final AmazonS3Client amazonS3Client;
+    private final FileRepository fileRepository;
 
-    public String uploadFiles(MultipartFile multipartFile, String filePath) throws IOException {
-        if (!Objects.equals(multipartFile.getContentType(), "image/jpeg")
-                && !Objects.equals(multipartFile.getContentType(), "image/png")
-                && !Objects.equals(multipartFile.getContentType(), "image/heic")) {
-            throw new IllegalArgumentException("지원하지 않는 확장자입니다.");
-        }
+    public FileResDto saveFile(MultipartFile multipartFile, String fileUrl) {
+        com.be.jellyletter.model.File file = com.be.jellyletter.model.File.builder()
+                .fileName(multipartFile.getOriginalFilename())
+                .contentType(multipartFile.getContentType())
+                .fileUrl(fileUrl)
+                .build();
 
+        com.be.jellyletter.model.File savedFile = fileRepository.save(file);
+
+        return FileConverter.entityToDto(savedFile);
+    }
+
+    public String uploadFile(MultipartFile multipartFile, String filePath) throws IOException {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 변환에 실패했습니다."));
 
