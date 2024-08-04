@@ -16,9 +16,9 @@ public class Letter {
     @Column(name = "letter_id")
     private Integer letterId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id", nullable = false)
-    private Pet pet; // ManyToOne 관계
+    private Pet pet;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;

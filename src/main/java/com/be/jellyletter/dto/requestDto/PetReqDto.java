@@ -34,9 +34,6 @@ public class PetReqDto {
     @Schema(description = "특별한 추억", example = "왕산 마리나에 가서 놀았던 날")
     private String memory;
 
-    @Schema(description = "반려동물 사진 url(백엔드에서 이미지 저장하고 넣을 값입니다. 빈 상태로 요청 주세요.)")
-    private String imageUrl;
-
     @Schema(description = "성격(옵션)")
     private List<PetInfoReqDto> petInfos;
 
@@ -58,7 +55,6 @@ public class PetReqDto {
                 .ownerNickname(finalOwnerNickName)
                 .toyAndTreat(this.toyAndTreat)
                 .memory(this.memory)
-                .imageUrl(this.imageUrl)
                 .build();
 
         if (this.petInfos != null) {

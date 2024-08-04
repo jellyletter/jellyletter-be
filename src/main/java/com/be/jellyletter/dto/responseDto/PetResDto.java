@@ -14,6 +14,5 @@ public class PetResDto {
     private String ownerNickname;
     private String toyAndTreat;
     private String memory;
-    private String imageUrl;
     private List<PetInfoResDto> petInfos;
 }

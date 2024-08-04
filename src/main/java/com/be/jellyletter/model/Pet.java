@@ -36,20 +36,16 @@ public class Pet {
     @Column(name = "memory")
     private String memory;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PetInfo> petInfos = new ArrayList<>();
 
     @Builder
-    public Pet(String name, Species species, String ownerNickname, String toyAndTreat, String memory, String imageUrl) {
+    public Pet(String name, Species species, String ownerNickname, String toyAndTreat, String memory) {
         this.name = name;
         this.species = species;
         this.ownerNickname = ownerNickname;
         this.toyAndTreat = toyAndTreat;
         this.memory = memory;
-        this.imageUrl = imageUrl;
     }
 
     public void addPetInfos(List<PetInfo> petInfos) {

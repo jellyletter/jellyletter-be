@@ -16,9 +16,9 @@ public class PetInfo {
     @Column(name = "info_id")
     private Integer infoId; // 단일 auto_increment 기본 키
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id", nullable = false)
-    private Pet pet; // ManyToOne 관계
+    private Pet pet;
 
     @Column(name = "group_id", nullable = false)
     private String groupId;
@@ -26,7 +26,7 @@ public class PetInfo {
     @Column(name = "code", nullable = false)
     private Integer code;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
             @JoinColumn(name = "group_id", referencedColumnName = "group_id", insertable = false, updatable = false),
             @JoinColumn(name = "code", referencedColumnName = "code", insertable = false, updatable = false)
