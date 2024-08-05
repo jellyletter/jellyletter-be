@@ -38,4 +38,12 @@ public class UserPetService {
 
         return UserPetConverter.entityToDto(savedUserPet);
     }
+
+    public UserPetResDto getUserPetById(Integer userId, Integer petId) {
+        UserPet.UserPetId userPetId = new UserPet.UserPetId(userId, petId);
+        UserPet userPet = userPetRepository.findById(userPetId)
+                .orElseThrow(() -> new NoSuchElementException("User-Pet with userId: " + userId + " and petId: " + petId + " not found"));
+
+        return UserPetConverter.entityToDto(userPet);
+    }
 }
