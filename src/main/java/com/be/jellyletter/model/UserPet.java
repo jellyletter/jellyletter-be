@@ -31,10 +31,10 @@ public class UserPet {
     @AllArgsConstructor
     public static class UserPetId implements Serializable {
         @Column(name = "user_id", nullable = false)
-        private String userId;
+        private Integer userId;
 
         @Column(name = "pet_id", nullable = false)
-        private String petId;
+        private Integer petId;
     }
 
     @Builder
