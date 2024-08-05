@@ -30,7 +30,13 @@ public class SecurityConfig {
                         "/css/**",
                         "/js/**",
                         "/images/**",
-                        "/api/**"
+//                        "/api/**",
+                        "/api/letter/pet**",
+                        "/api/pet**",
+                        "/api/file**",
+                        "/api/info**",
+                        "/api/counseling**",
+                        "/api/heat**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

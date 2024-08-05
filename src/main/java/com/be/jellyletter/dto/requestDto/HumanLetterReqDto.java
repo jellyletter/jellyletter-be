@@ -10,7 +10,7 @@ import lombok.Data;
 public class HumanLetterReqDto {
 
     @Schema(description = "편지 받을 반려동물 ID")
-    private Integer PetId;
+    private Integer petId;
 
     @Schema(description = "유저가 입력한 편지 내용")
     private String content;

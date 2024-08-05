@@ -40,7 +40,7 @@ public class UserController {
             summary = "유저 - 반려동물 연결 API",
             description = "로그인 후, 유저 정보와 반려동물 정보를 연결하여 저장합니다."
     )
-    public ResponseEntity<UserPetResDto> createPetUser(@Valid @RequestBody UserPetReqDto userPetReqDto) {
+    public ResponseEntity<UserPetResDto> createUserPet(@Valid @RequestBody UserPetReqDto userPetReqDto) {
         UserPetResDto responseDto = userPetService.createUserPet(userPetReqDto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
