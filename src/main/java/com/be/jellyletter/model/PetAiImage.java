@@ -27,10 +27,7 @@ public class PetAiImage {
     @Column(name = "message", nullable = false)
     private String message;
 
-    @Builder
-    public PetAiImage(Species species, String imageUrl, String message) {
-        this.species = species;
-        this.imageUrl = imageUrl;
-        this.message = message;
+    public void updateMessage(String newMessage) {
+        this.message = newMessage;
     }
 }

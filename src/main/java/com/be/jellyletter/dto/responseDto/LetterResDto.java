@@ -9,6 +9,6 @@ public class LetterResDto {
     private PetResDto petResDto;
     private Integer typeCode;
     private String content;
-    private PetAiImage petAiImage;
+    private PetAiImageResDto petAiImage;
     private String shareKey;
 }

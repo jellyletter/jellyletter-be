@@ -41,7 +41,8 @@ public class LetterService {
 
         // 반려동물이 보내는 메세지에는 AI 이미지 포함
         if (letterReqDto.getTypeCode() == 0) {
-            PetAiImage petAiImage = getRandomNoDupPetAiImage(pet.getId(), pet.getSpecies());
+            PetAiImage randomPetAiImage = getRandomNoDupPetAiImage(pet.getId(), pet.getSpecies());
+            PetAiImage petAiImage = replaceOwnerNickname(randomPetAiImage, pet.getOwnerNickname());
             letter.addPetAiImage(petAiImage);
         }
 
@@ -108,5 +109,13 @@ public class LetterService {
 
         return petAiImageRepository.findById(randomId)
                 .orElseThrow(() -> new NoSuchElementException("PetAiImage not found with id: " + randomId));
+    }
+
+    private PetAiImage replaceOwnerNickname(PetAiImage petAiImage, String ownerNickname) {
+        String originalMessage = petAiImage.getMessage();
+        String newMessage = originalMessage.replace("{{주인을 부르는 방식}}", ownerNickname);
+        petAiImage.updateMessage(newMessage);
+
+        return petAiImage;
     }
 }
