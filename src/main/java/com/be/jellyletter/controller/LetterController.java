@@ -22,6 +22,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/letter")
 @Validated
@@ -104,6 +106,12 @@ public class LetterController {
             throw new IllegalArgumentException("Pet not found for ID: " + petIdReqDto.getId());
         }
 
+        // 유저-펫 연결 조회
+        UserPetResDto userPetResDto = userPetService.getUserPetById(user.getId(), petDto.getId());
+        if (userPetResDto == null) {
+            throw new IllegalArgumentException("User-Pet not found");
+        }
+
         // 유저가 마지막으로 보낸 편지(=바로 직전 편지) 조회
         LetterResDto letterDto = letterService.getLastLetterByPetIdAndTypeCode(petDto.getId(), 1);
 
@@ -122,6 +130,36 @@ public class LetterController {
     @Operation(summary = "편지 결과 페이지 조회 API", description = "편지 링크 공유할 때, 쿼리 파라미터로 petId나 letterId가 노출되지 않도록 shareKey를 사용합니다. shareKey 값으로 편지 내용과 반려동물 정보를 조회하여 반환합니다.")
     public ResponseEntity<LetterResDto> getLetterByShareKey(@RequestParam(name = "shareKey") String shareKey) {
         LetterResDto responseDto = letterService.getLetterByShareKey(shareKey);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/user-pet")
+    @Operation(summary = "유저 - 반려동물 간 주고 받은 편지 조회 API", description = "로그인 정보로 유저 확인하고, petId로 반려동물 정보를 조회하여 주고받은 편지 내역 전체를 반환합니다.")
+    public ResponseEntity<List<LetterResDto>> getAllUserPetLetters(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody PetIdReqDto petIdReqDto
+    ) {
+        // 유저 정보 확인
+        User user = userDetails.getUser();
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        // 펫 정보 조회
+        PetResDto petDto = petService.getPetById(petIdReqDto.getId());
+        if (petDto == null) {
+            throw new IllegalArgumentException("Pet not found for ID: " + petIdReqDto.getId());
+        }
+
+        // 유저-펫 연결 조회
+        UserPetResDto userPetResDto = userPetService.getUserPetById(user.getId(), petDto.getId());
+        if (userPetResDto == null) {
+            throw new IllegalArgumentException("User-Pet not found");
+        }
+
+        // 유저와 반려동물 간 주고 받은 편지 내역 조회
+        List<LetterResDto> responseDto = letterService.getAllUserPetLetters(petDto.getId());
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }

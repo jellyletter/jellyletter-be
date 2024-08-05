@@ -60,9 +60,20 @@ public class LetterService {
 
     public LetterResDto getLastLetterByPetIdAndTypeCode(Integer petId, Integer typeCode) {
         Letter letter = letterRepository.findTopByPetIdAAndTypeCodeOrderByCreatedDateDesc(petId, typeCode)
-                .orElseThrow(() -> new NoSuchElementException("Letter with PetId: " + petId + " TypeCode: " + typeCode));
+                .orElseThrow(() -> new NoSuchElementException("Letter with PetId: " + petId + " TypeCode: " + typeCode + " not found"));
 
         return LetterConverter.entityToDto(letter);
+    }
+
+    public List<LetterResDto> getAllUserPetLetters(Integer petId) {
+        List<Letter> userPetLetters = letterRepository.findAllByPetId(petId);
+        if (userPetLetters.isEmpty()) {
+            throw new NoSuchElementException("Letter with PetId: " + petId + " not found");
+        }
+
+        return userPetLetters.stream()
+                .map(LetterConverter::entityToDto)
+                .toList();
     }
 
     private PetAiImage getRandomNoDupPetAiImage(Integer petId, Species species) {
