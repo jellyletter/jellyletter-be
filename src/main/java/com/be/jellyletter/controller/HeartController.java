@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/heart")
+@RequestMapping("api/heart")
 @Validated
 @RequiredArgsConstructor
 public class HeartController {

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/info")
+@RequestMapping("api/info")
 @Validated
 @RequiredArgsConstructor
 public class InfoController {

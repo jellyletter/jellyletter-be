@@ -21,7 +21,7 @@ import java.io.IOException;
 
 
 @RestController
-@RequestMapping("/pet")
+@RequestMapping("api/pet")
 @Validated
 @RequiredArgsConstructor
 public class PetController {
