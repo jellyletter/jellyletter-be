@@ -15,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,20 +81,30 @@ public class LetterService {
         // Pet Ai 이미지 전체 조회
         List<PetAiImage> allPetAiImageForSpecies = petAiImageRepository.findAllBySpecies(species);
 
-        // 보낸 이미지 ID 추출
-        Set<Integer> letterPetAiImageIds = petLetters.stream()
-                .map(letter -> letter.getPetAiImage().getId())
-                .collect(Collectors.toSet());
-
         // 전체 이미지 ID 추출
         Set<Integer> allPetAiImageIds = allPetAiImageForSpecies.stream()
                 .map(PetAiImage::getId)
                 .collect(Collectors.toSet());
 
-        // 차집합
-        Set<Integer> notSendPetAiImageIds = allPetAiImageIds.stream()
-                .filter(id -> !letterPetAiImageIds.contains(id))
-                .collect(Collectors.toSet());
+        // 랜덤으로 고를 이미지 집합 연산
+        Set<Integer> notSendPetAiImageIds;
+        if (!petLetters.isEmpty()) {
+            // 보낸 이미지 ID 추출
+            Set<Integer> letterPetAiImageIds = petLetters.stream()
+                    .map(Letter::getPetAiImage)
+                    .filter(Objects::nonNull)
+                    .map(PetAiImage::getId)
+                    .collect(Collectors.toSet());
+
+            // 차집합
+            notSendPetAiImageIds = allPetAiImageIds.stream()
+                    .filter(id -> !letterPetAiImageIds.contains(id))
+                    .collect(Collectors.toSet());
+
+        } else {
+            notSendPetAiImageIds = allPetAiImageIds;
+        }
+
 
         // 차집합 중 랜덤 선택
         if (notSendPetAiImageIds.isEmpty()) {
