@@ -35,14 +35,15 @@ public class LetterController {
     private final ClovaStudioService clovaStudioService;
 
     @PostMapping("/pet")
-    @Operation(summary = "클로바 X 편지 생성 API", description = "petId를 받아 반려동물 정보를 조회하고, 클로바 X로 편지 내용을 생성하여 저장합니다.")
-    public ResponseEntity<LetterResDto> createPetLetter(@Valid @RequestBody PetIdReqDto petIdReqDto) {
+    @Operation(summary = "반려동물이 보내는 첫번째 편지 생성 및 저장 API", description = "petId를 받아 반려동물 정보를 조회하고, 클로바 X로 편지 내용을 생성하여 저장합니다.")
+    public ResponseEntity<LetterResDto> createPetFirstLetter(@Valid @RequestBody PetIdReqDto petIdReqDto) {
+        // 펫 정보 조회
         PetResDto petDto = petService.getPetById(petIdReqDto.getId());
         if (petDto == null) {
             throw new IllegalArgumentException("Pet not found for ID: " + petIdReqDto.getId());
         }
 
-        String content = clovaStudioService.sendRequest(petDto);
+        String content = clovaStudioService.generateFirstLetter(petDto);
 
         LetterReqDto letterReqDto = new LetterReqDto();
         letterReqDto.setPetResDto(petDto);
@@ -53,9 +54,9 @@ public class LetterController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    @PostMapping("/human")
+    @PostMapping("/human-reply")
     @Operation(summary = "유저가 보내는 답장 편지 저장 API", description = "유저 ID, 펫 ID 로 각각 조회, 연결 여부를 확인하고 유저가 보낸 편지 내용을 저장합니다.")
-    public ResponseEntity<LetterResDto> createHumanLetter(
+    public ResponseEntity<LetterResDto> createHumanReplyLetter(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody HumanLetterReqDto humanLetterReqDto) {
         // 유저 정보 확인
@@ -64,13 +65,13 @@ public class LetterController {
             throw new IllegalArgumentException("User not found");
         }
 
-        // 펫 정보 확인
+        // 펫 정보 조회
         PetResDto petDto = petService.getPetById(humanLetterReqDto.getPetId());
         if (petDto == null) {
             throw new IllegalArgumentException("Pet not found for ID: " + humanLetterReqDto.getPetId());
         }
 
-        // 유저-펫 연결 확인
+        // 유저-펫 연결 조회
         UserPetResDto userPetResDto = userPetService.getUserPetById(user.getId(), petDto.getId());
         if (userPetResDto == null) {
             throw new IllegalArgumentException("User-Pet not found");
@@ -80,6 +81,38 @@ public class LetterController {
         letterReqDto.setPetResDto(petDto);
         letterReqDto.setTypeCode(1);
         letterReqDto.setContent(humanLetterReqDto.getContent());
+        LetterResDto responseDto = letterService.createLetter(letterReqDto);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/pet-reply")
+    @Operation(summary = "반려동물이 보내는 답장 편지 생성 및 저장 API", description = "로그인 정보로 유저 확인하고, petId로 반려동물 정보를 조회하여 클로바 X로 답장 편지를 생성하여 저장합니다.")
+    public ResponseEntity<LetterResDto> createPetReplyLetter(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody PetIdReqDto petIdReqDto
+    ) {
+        // 유저 정보 확인
+        User user = userDetails.getUser();
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        // 펫 정보 조회
+        PetResDto petDto = petService.getPetById(petIdReqDto.getId());
+        if (petDto == null) {
+            throw new IllegalArgumentException("Pet not found for ID: " + petIdReqDto.getId());
+        }
+
+        // 유저가 마지막으로 보낸 편지(=바로 직전 편지) 조회
+        LetterResDto letterDto = letterService.getLastLetterByPetIdAndTypeCode(petDto.getId(), 1);
+
+        String replyContent = clovaStudioService.generateReplyLetter(petDto, letterDto);
+
+        LetterReqDto letterReqDto = new LetterReqDto();
+        letterReqDto.setPetResDto(petDto);
+        letterReqDto.setTypeCode(0);
+        letterReqDto.setContent(replyContent);
         LetterResDto responseDto = letterService.createLetter(letterReqDto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);

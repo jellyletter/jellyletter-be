@@ -58,6 +58,13 @@ public class LetterService {
         return LetterConverter.entityToDto(letter);
     }
 
+    public LetterResDto getLastLetterByPetIdAndTypeCode(Integer petId, Integer typeCode) {
+        Letter letter = letterRepository.findTopByPetIdAAndTypeCodeOrderByCreatedDateDesc(petId, typeCode)
+                .orElseThrow(() -> new NoSuchElementException("Letter with PetId: " + petId + " TypeCode: " + typeCode));
+
+        return LetterConverter.entityToDto(letter);
+    }
+
     private PetAiImage getRandomNoDupPetAiImage(Integer petId, Species species) {
         // 해당 반려동물이 보낸 편지 리스트 조회
         List<Letter> petLetters = letterRepository.findAllByPetId(petId);
