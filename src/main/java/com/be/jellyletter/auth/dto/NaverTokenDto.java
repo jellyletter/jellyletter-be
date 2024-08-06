@@ -1,4 +1,4 @@
-package com.be.jellyletter.dto.oauth2Dto;
+package com.be.jellyletter.auth.dto;
 
 import lombok.Builder;
 import lombok.Data;

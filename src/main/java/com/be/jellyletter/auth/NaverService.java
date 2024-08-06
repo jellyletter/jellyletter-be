@@ -1,11 +1,12 @@
-package com.be.jellyletter.service;
+package com.be.jellyletter.auth;
 
-import com.be.jellyletter.dto.oauth2Dto.NaverTokenDto;
-import com.be.jellyletter.dto.oauth2Dto.TokenDto;
-import com.be.jellyletter.dto.oauth2Dto.TokenResDto;
+import com.be.jellyletter.auth.jwt.JwtService;
+import com.be.jellyletter.auth.jwt.JwtTokenProvider;
+import com.be.jellyletter.auth.dto.NaverTokenDto;
+import com.be.jellyletter.auth.dto.TokenDto;
+import com.be.jellyletter.auth.dto.TokenResDto;
 import com.be.jellyletter.enums.Oauth2Vendor;
 import com.be.jellyletter.enums.Role;
-import com.be.jellyletter.jwt.JwtTokenProvider;
 import com.be.jellyletter.model.User;
 import com.be.jellyletter.repository.UserRepository;
 import com.google.gson.Gson;
@@ -38,7 +39,7 @@ public class NaverService {
     private String userInfoUrl;
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenService refreshTokenService;
+    private final JwtService jwtService;
     private final UserRepository userRepository;
 
     public NaverTokenDto getNaverToken(String code, String state) {
@@ -143,7 +144,7 @@ public class NaverService {
 
                 TokenDto tokenDto = jwtTokenProvider.createToken(email, user.getUserRole());
                 tokenDto.setGrantType(user.getUserRole());
-                refreshTokenService.saveRefreshToken(tokenDto);
+                jwtService.saveRefreshToken(tokenDto);
 
                 return tokenDto.convertToResDto(user);
             } else {
@@ -152,7 +153,7 @@ public class NaverService {
 
                 TokenDto tokenDto = jwtTokenProvider.createToken(email, user.get().getUserRole());
                 tokenDto.setGrantType(user.get().getUserRole());
-                refreshTokenService.saveRefreshToken(tokenDto);
+                jwtService.saveRefreshToken(tokenDto);
 
                 return tokenDto.convertToResDto(user.get());
             }

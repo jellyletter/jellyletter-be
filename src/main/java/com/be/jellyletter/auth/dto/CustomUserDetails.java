@@ -1,4 +1,4 @@
-package com.be.jellyletter.dto.oauth2Dto;
+package com.be.jellyletter.auth.dto;
 
 import com.be.jellyletter.model.User;
 import lombok.Getter;
@@ -17,6 +17,10 @@ public class CustomUserDetails implements UserDetails {
 
     public CustomUserDetails(User user) {
         this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     @Override

@@ -38,6 +38,7 @@ public class User {
     @Column(name = "vendor", nullable = false)
     private Oauth2Vendor vendor;
 
+    // 0 회원, 1 탈퇴, 2 휴면
     @Column(name = "user_status", nullable = false)
     private Integer userStatus;
 
@@ -46,11 +47,20 @@ public class User {
             String username, Role userRole,
             String nickname, String email, String userPhone, Oauth2Vendor vendor, Integer userStatus) {
         this.username = username;
-        this.userRole = userRole;
         this.nickname = nickname;
         this.email = email;
         this.userPhone = userPhone;
+
         this.vendor = vendor;
+        this.userRole = userRole;
         this.userStatus = userStatus;
     }
+
+    public User update(String name, String nickname) {
+        this.username = name;
+        this.nickname = nickname;
+
+        return this;
+    }
+
 }

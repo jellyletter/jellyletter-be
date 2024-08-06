@@ -1,4 +1,4 @@
-package com.be.jellyletter.dto.oauth2Dto;
+package com.be.jellyletter.auth.dto;
 
 import com.be.jellyletter.enums.Role;
 import com.be.jellyletter.model.RefreshToken;
@@ -29,12 +29,6 @@ public class TokenDto {
     }
 
     public TokenResDto convertToResDto(User user) {
-        TokenResDto resDto = new TokenResDto();
-        resDto.setGrantType(this.grantType);
-        resDto.setAccessToken(this.accessToken);
-        resDto.setRefreshToken(this.refreshToken);
-        resDto.setUser(user);
-
-        return resDto;
+        return new TokenResDto(this.grantType, this.accessToken, this.refreshToken, user);
     }
 }

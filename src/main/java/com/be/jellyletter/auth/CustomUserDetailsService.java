@@ -1,6 +1,6 @@
-package com.be.jellyletter.service;
+package com.be.jellyletter.auth;
 
-import com.be.jellyletter.dto.oauth2Dto.CustomUserDetails;
+import com.be.jellyletter.auth.dto.CustomUserDetails;
 import com.be.jellyletter.model.User;
 import com.be.jellyletter.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

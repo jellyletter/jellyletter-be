@@ -1,6 +1,6 @@
 package com.be.jellyletter.controller;
 
-import com.be.jellyletter.dto.oauth2Dto.CustomUserDetails;
+import com.be.jellyletter.auth.dto.CustomUserDetails;
 import com.be.jellyletter.dto.requestDto.HumanLetterReqDto;
 import com.be.jellyletter.dto.requestDto.LetterReqDto;
 import com.be.jellyletter.dto.requestDto.PetIdReqDto;
@@ -8,7 +8,6 @@ import com.be.jellyletter.dto.responseDto.LetterResDto;
 import com.be.jellyletter.dto.responseDto.PetResDto;
 import com.be.jellyletter.dto.responseDto.UserPetResDto;
 import com.be.jellyletter.model.User;
-import com.be.jellyletter.model.UserPet;
 import com.be.jellyletter.service.ClovaStudioService;
 import com.be.jellyletter.service.LetterService;
 import com.be.jellyletter.service.PetService;

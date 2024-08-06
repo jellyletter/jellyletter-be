@@ -1,6 +1,6 @@
-package com.be.jellyletter.jwt;
+package com.be.jellyletter.auth.jwt;
 
-import com.be.jellyletter.dto.oauth2Dto.TokenDto;
+import com.be.jellyletter.auth.dto.TokenDto;
 import com.be.jellyletter.enums.Role;
 import com.be.jellyletter.model.RefreshToken;
 import io.jsonwebtoken.*;

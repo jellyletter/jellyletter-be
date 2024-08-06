@@ -20,8 +20,8 @@ public class RefreshToken {
     private String keyUserId;
 
     @Builder
-    public RefreshToken(String refreshToken, String keyUserId) {
-        this.refreshToken = refreshToken;
+    public RefreshToken(String keyUserId, String refreshToken) {
         this.keyUserId = keyUserId;
+        this.refreshToken = refreshToken;
     }
 }
