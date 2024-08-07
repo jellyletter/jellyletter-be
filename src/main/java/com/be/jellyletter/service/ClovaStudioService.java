@@ -209,8 +209,6 @@ public class ClovaStudioService {
 
     private String removeTitleLine(String content) {
         String[] lines = content.split("\\\\n");
-        System.out.println("Lines: " + java.util.Arrays.toString(lines));
-
 
         if (lines.length > 0 && lines[0].startsWith("제목 :")) {
             lines = java.util.Arrays.copyOfRange(lines, 1, lines.length);

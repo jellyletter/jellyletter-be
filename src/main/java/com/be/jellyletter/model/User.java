@@ -56,11 +56,4 @@ public class User {
         this.userStatus = userStatus;
     }
 
-    public User update(String name, String nickname) {
-        this.username = name;
-        this.nickname = nickname;
-
-        return this;
-    }
-
 }

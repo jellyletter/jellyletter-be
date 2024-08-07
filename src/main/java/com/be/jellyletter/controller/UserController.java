@@ -1,15 +1,13 @@
 package com.be.jellyletter.controller;
 
 import com.be.jellyletter.auth.jwt.JwtService;
-import com.be.jellyletter.auth.dto.NaverTokenDto;
 import com.be.jellyletter.auth.dto.TokenResDto;
+import com.be.jellyletter.dto.requestDto.LoginReqDto;
 import com.be.jellyletter.dto.requestDto.UserPetReqDto;
 import com.be.jellyletter.dto.responseDto.UserPetResDto;
-import com.be.jellyletter.auth.NaverService;
 import com.be.jellyletter.service.UserPetService;
 import com.be.jellyletter.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,15 +21,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final NaverService naverService;
     private final UserService userService;
     private final JwtService jwtService;
     private final UserPetService userPetService;
 
     // 네이버 소셜 로그인, 회원가입
-    @PostMapping("/login")
-    public ResponseEntity<TokenResDto> login(@RequestBody Map<String, Object> data) throws IOException {
-        TokenResDto responseDto = userService.login(data, (String) data.get("provider"));
+    @PostMapping("/login/custom")
+    public ResponseEntity<TokenResDto> login(@RequestBody LoginReqDto loginReqDto) throws IOException {
+        TokenResDto responseDto = userService.login(loginReqDto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }

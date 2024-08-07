@@ -42,8 +42,8 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public TokenDto createToken(String userId, Role userRole) {
-        Claims claims = Jwts.claims().setSubject(userId);
+    public TokenDto createToken(Integer userId, Role userRole) {
+        Claims claims = Jwts.claims().setSubject(String.valueOf(userId));
         claims.put("userRole", userRole);
 
         Date now = new Date();
@@ -64,7 +64,7 @@ public class JwtTokenProvider {
         return TokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .keyUserId(userId)
+                .keyUserId(String.valueOf(userId))
                 .build();
     }
 

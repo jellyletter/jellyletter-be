@@ -1,22 +1,19 @@
 package com.be.jellyletter.service;
 
-import com.be.jellyletter.auth.dto.NaverUserInfo;
-import com.be.jellyletter.auth.dto.OAuth2UserInfo;
 import com.be.jellyletter.auth.dto.TokenDto;
 import com.be.jellyletter.auth.dto.TokenResDto;
 import com.be.jellyletter.auth.jwt.JwtService;
 import com.be.jellyletter.auth.jwt.JwtTokenProvider;
+import com.be.jellyletter.dto.requestDto.LoginReqDto;
 import com.be.jellyletter.enums.Oauth2Vendor;
 import com.be.jellyletter.enums.Role;
 import com.be.jellyletter.model.User;
 import com.be.jellyletter.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -29,43 +26,38 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtService jwtService;
 
-    public TokenResDto login(Map<String, Object> data, String provider) {
+    public TokenResDto login(LoginReqDto loginReqDto) {
 
-        OAuth2UserInfo userInfo = null;
         Oauth2Vendor vendor = null;
 
-        if (provider.equals("naver")) {
-            Map<String, Object> info = (Map<String, Object>) data.get("object");
-            System.out.println(info);
-            userInfo = new NaverUserInfo((Map<String, Object>) info.get("profile"));
-            System.out.println(userInfo);
+        if (loginReqDto.getProvider().equals("naver")) {
             vendor = Oauth2Vendor.NAVER;
         }
 
-        if (!userRepository.existsByEmail(userInfo.getEmail())) {
+        if (!userRepository.existsByEmail(loginReqDto.getEmail())) {
             // DB에 해당 이메일 없을 경우 회원 가입 로직 실행
             User user = User.builder()
-                    .username(userInfo.getUsername())
+                    .username(loginReqDto.getName())
                     .userRole(Role.USER)
-                    .nickname(userInfo.getNickname())
-                    .email(userInfo.getEmail())
-                    .userPhone(userInfo.getUserPhone())
+                    .nickname(loginReqDto.getNickname())
+                    .email(loginReqDto.getEmail())
+                    .userPhone(loginReqDto.getMobile())
                     .vendor(vendor)
                     .userStatus(0)
                     .build();
 
-            userRepository.save(user);
+            User savedUser = userRepository.save(user);
 
-            TokenDto tokenDto = jwtTokenProvider.createToken(userInfo.getEmail(), user.getUserRole());
+            TokenDto tokenDto = jwtTokenProvider.createToken(savedUser.getId(), user.getUserRole());
             tokenDto.setGrantType(user.getUserRole());
             jwtService.saveRefreshToken(tokenDto);
 
             return tokenDto.convertToResDto(user);
         } else {
             // DB에 해당 이메일 회원 정보 있을 경우 jwt token 생성해서 리턴
-            Optional<User> user = userRepository.findByEmail(userInfo.getEmail());
+            Optional<User> user = userRepository.findByEmail(loginReqDto.getEmail());
 
-            TokenDto tokenDto = jwtTokenProvider.createToken(userInfo.getEmail(), user.get().getUserRole());
+            TokenDto tokenDto = jwtTokenProvider.createToken(user.get().getId(), user.get().getUserRole());
             tokenDto.setGrantType(user.get().getUserRole());
             jwtService.saveRefreshToken(tokenDto);
 
