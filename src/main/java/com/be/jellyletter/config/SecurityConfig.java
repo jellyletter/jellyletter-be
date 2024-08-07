@@ -17,7 +17,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (실제 환경에서는 신중히 고려해야 합니다)
-            .authorizeHttpRequests(authorize -> authorize
+//                .cors(cors -> cors.configurationSource(webConfig.corsConfigurationSource())) // CORS 설정
+                .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
@@ -33,6 +34,7 @@ public class SecurityConfig {
                         "/js/**",
                         "/images/**",
 //                        "/api/**",
+                        "/api/letter**",
                         "/api/letter/pet**",
                         "/api/pet**",
                         "/api/file**",

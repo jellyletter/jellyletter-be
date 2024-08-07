@@ -24,6 +24,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+// 프론트에서 소셜 로그인 처리하기로 해서 사용 X
 public class NaverService {
 
     @Value("${spring.security.oauth2.client.registration.naver.client-id}")

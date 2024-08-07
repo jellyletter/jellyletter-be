@@ -7,7 +7,9 @@ import com.be.jellyletter.dto.requestDto.UserPetReqDto;
 import com.be.jellyletter.dto.responseDto.UserPetResDto;
 import com.be.jellyletter.auth.NaverService;
 import com.be.jellyletter.service.UserPetService;
+import com.be.jellyletter.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,16 +24,14 @@ import java.util.Map;
 public class UserController {
 
     private final NaverService naverService;
+    private final UserService userService;
     private final JwtService jwtService;
     private final UserPetService userPetService;
 
     // 네이버 소셜 로그인, 회원가입
-    @GetMapping("/login/oauth2/code/naver")
-    public ResponseEntity<TokenResDto> naverCallback(@RequestParam("code") String code, @RequestParam("state") String state) throws IOException {
-        // 프론트 측에서 넘어온 인가 코드로 카카오 네이버 서버에서 토큰 발급 받기
-        NaverTokenDto naverTokenDto = naverService.getNaverToken(code, state);
-        // 발급받은 토큰으로 실제 유저 정보 조회 > JWT 토큰 생성
-        TokenResDto responseDto = naverService.loginWithNaver(naverTokenDto);
+    @PostMapping("/login")
+    public ResponseEntity<TokenResDto> login(HttpServletResponse response, @RequestBody Map<String, Object> data) throws IOException {
+        TokenResDto responseDto = userService.login(response, data, (String) data.get("provider"));
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -39,7 +39,6 @@ public class UserController {
     // 토큰 재발급
     @PostMapping("/login/refresh-token")
     public ResponseEntity<TokenResDto> refreshToken(@RequestBody Map<String, String> refreshToken) {
-
         // Refresh Token 검증
         String recreatedAccessToken = jwtService.validateRefreshToken(refreshToken.get("refreshToken"));
 
