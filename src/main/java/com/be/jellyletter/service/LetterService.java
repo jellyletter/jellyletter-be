@@ -8,10 +8,13 @@ import com.be.jellyletter.enums.Species;
 import com.be.jellyletter.model.Letter;
 import com.be.jellyletter.model.Pet;
 import com.be.jellyletter.model.PetAiImage;
+import com.be.jellyletter.model.UserPet;
 import com.be.jellyletter.repository.LetterRepository;
 import com.be.jellyletter.repository.PetAiImageRepository;
 import com.be.jellyletter.repository.PetRepository;
+import com.be.jellyletter.repository.UserPetRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,7 @@ public class LetterService {
     private final LetterRepository letterRepository;
     private final PetRepository petRepository;
     private final PetAiImageRepository petAiImageRepository;
+    private final UserPetRepository userPetRepository;
 
     public LetterResDto createLetter(LetterReqDto letterReqDto) {
         Integer petId = letterReqDto.getPetResDto().getId();
@@ -66,17 +70,23 @@ public class LetterService {
         return LetterConverter.entityToDto(letter);
     }
 
-    public List<LetterResDto> getAllUserPetLetters(PetResDto petDto) {
-        List<Letter> userPetLetters = letterRepository.findAllByPetId(petDto.getId());
+    public List<LetterResDto> getAllUserPetLetters(Integer userId) {
+        UserPet userPet = userPetRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoSuchElementException("UserPet with userId: " + userId + " not found"));
+
+        Integer petId = userPet.getPet().getId();
+        String ownerNickname = userPet.getPet().getOwnerNickname();
+
+        List<Letter> userPetLetters = letterRepository.findAllByPetId(petId);
         if (userPetLetters.isEmpty()) {
-            throw new NoSuchElementException("Letter with PetId: " + petDto.getId() + " not found");
+            throw new NoSuchElementException("Letter with PetId: " + petId + " not found");
         }
 
         List<Letter> replacedUserPerLetters = new ArrayList<>();
         for (Letter userPetLetter : userPetLetters) {
             PetAiImage petAiImage = userPetLetter.getPetAiImage();
             if (petAiImage != null) {
-                PetAiImage newAiImage = replaceOwnerNickname(petAiImage, petDto.getOwnerNickname());
+                PetAiImage newAiImage = replaceOwnerNickname(petAiImage, ownerNickname);
                 userPetLetter.updatePetAiImage(newAiImage);
                 replacedUserPerLetters.add(userPetLetter);
             }

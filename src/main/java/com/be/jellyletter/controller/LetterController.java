@@ -136,8 +136,7 @@ public class LetterController {
     @GetMapping("/user-pet")
     @Operation(summary = "유저 - 반려동물 간 주고 받은 편지 조회 API", description = "로그인 정보로 유저 확인하고, petId로 반려동물 정보를 조회하여 주고받은 편지 내역 전체를 반환합니다.")
     public List<LetterResDto> getAllUserPetLetters(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam(name = "petId") Integer petId
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         // 유저 정보 확인
         User user = userDetails.getUser();
@@ -145,20 +144,9 @@ public class LetterController {
             throw new IllegalArgumentException("User not found");
         }
 
-        // 펫 정보 조회
-        PetResDto petDto = petService.getPetById(petId);
-        if (petDto == null) {
-            throw new IllegalArgumentException("Pet not found for ID: " + petId);
-        }
-
-        // 유저-펫 연결 조회
-        UserPetResDto userPetResDto = userPetService.getUserPetById(user.getId(), petDto.getId());
-        if (userPetResDto == null) {
-            throw new IllegalArgumentException("User-Pet not found");
-        }
-
         // 유저와 반려동물 간 주고 받은 편지 내역 조회
-        List<LetterResDto> responseDto = letterService.getAllUserPetLetters(petDto);
+        // 우선 유저에게 반려동물이 1 마리만 있는 상태라 유저에게 연결된 반려동물 편지 모두 조회
+        List<LetterResDto> responseDto = letterService.getAllUserPetLetters(user.getId());
 
         return responseDto;
     }
