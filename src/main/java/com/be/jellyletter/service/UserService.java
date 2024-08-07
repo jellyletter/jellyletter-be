@@ -13,11 +13,13 @@ import com.be.jellyletter.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -34,7 +36,9 @@ public class UserService {
 
         if (provider.equals("naver")) {
             Map<String, Object> info = (Map<String, Object>) data.get("object");
+            System.out.println(info);
             userInfo = new NaverUserInfo((Map<String, Object>) info.get("profile"));
+            System.out.println(userInfo);
             vendor = Oauth2Vendor.NAVER;
         }
 

@@ -8,10 +8,12 @@ import com.be.jellyletter.repository.PetRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
