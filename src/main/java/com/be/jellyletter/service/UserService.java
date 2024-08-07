@@ -27,14 +27,14 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtService jwtService;
 
-    public TokenResDto login(HttpServletResponse response, Map<String, Object> data, String provider) {
+    public TokenResDto login(Map<String, Object> data, String provider) {
 
         OAuth2UserInfo userInfo = null;
         Oauth2Vendor vendor = null;
 
         if (provider.equals("naver")) {
             Map<String, Object> info = (Map<String, Object>) data.get("object");
-            userInfo = new NaverUserInfo((Map<String, Object>) data.get("profile"));
+            userInfo = new NaverUserInfo((Map<String, Object>) info.get("profile"));
             vendor = Oauth2Vendor.NAVER;
         }
 
@@ -46,7 +46,7 @@ public class UserService {
                     .nickname(userInfo.getNickname())
                     .email(userInfo.getEmail())
                     .userPhone(userInfo.getUserPhone())
-                    .vendor(Oauth2Vendor.NAVER)
+                    .vendor(vendor)
                     .userStatus(0)
                     .build();
 

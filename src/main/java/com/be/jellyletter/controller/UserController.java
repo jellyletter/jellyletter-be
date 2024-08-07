@@ -30,8 +30,8 @@ public class UserController {
 
     // 네이버 소셜 로그인, 회원가입
     @PostMapping("/login")
-    public ResponseEntity<TokenResDto> login(HttpServletResponse response, @RequestBody Map<String, Object> data) throws IOException {
-        TokenResDto responseDto = userService.login(response, data, (String) data.get("provider"));
+    public ResponseEntity<TokenResDto> login(@RequestBody Map<String, Object> data) throws IOException {
+        TokenResDto responseDto = userService.login(data, (String) data.get("provider"));
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
