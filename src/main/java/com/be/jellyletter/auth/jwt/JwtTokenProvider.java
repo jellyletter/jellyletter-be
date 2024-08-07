@@ -6,6 +6,7 @@ import com.be.jellyletter.model.RefreshToken;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,36 +29,36 @@ public class JwtTokenProvider {
     @Value("${jwt.refresh-secret-key}")
     private String refreshSecretKey;
 
-    // 토큰 유효시간 1시간
-    private final long accessTokenValidTime = Duration.ofHours(1).toMillis();
+    // 액세스 토큰 유효시간 10시간
+    private final long accessTokenValidTime = Duration.ofHours(10).toMillis();
     // 리프레시 토큰 유효시간 2주
     private final long refreshTokenValidTime = Duration.ofDays(14).toMillis();
 
-    private final UserDetailsService userDetailsService;
 
-    // 객체 초기화, secretKey 를 Base64 로 인코딩
-    @PostConstruct
-    protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-    }
+    private final UserDetailsService userDetailsService;
+    private final HttpSession session;
 
     // JWT 토큰 생성
     public TokenDto createToken(Integer userId, Role userRole) {
         Claims claims = Jwts.claims().setSubject(String.valueOf(userId));
         claims.put("userRole", userRole);
 
+        // 새로운 Date 객체 생성
         Date now = new Date();
+        Date accessTokenExpiryDate = new Date(now.getTime() + accessTokenValidTime);
+        Date refreshTokenExpiryDate = new Date(now.getTime() + refreshTokenValidTime);
+
         String accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + accessTokenValidTime))
+                .setExpiration(accessTokenExpiryDate)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
         String refreshToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
+                .setExpiration(refreshTokenExpiryDate)
                 .signWith(SignatureAlgorithm.HS256, refreshSecretKey)
                 .compact();
 
@@ -86,8 +87,21 @@ public class JwtTokenProvider {
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        try {
+            String userId = this.getUserId(token);
+            System.out.println("***** userid: " + userId);
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+            session.setAttribute("principal", userDetails);
+
+            return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Exception: " + e.getMessage());
+
+            return null;
+        }
+
     }
 
     // JWT 토큰에서 회원 정보 추출
@@ -103,8 +117,13 @@ public class JwtTokenProvider {
     // 토큰의 유효성 + 만료일자 확인
     public boolean validateToken(String jwtToken) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-            return !claims.getBody().getExpiration().before(new Date());
+            Jws<Claims> claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(jwtToken);
+
+            // 새로운 Date 객체 생성
+            Date now = new Date();
+            return !claims.getBody().getExpiration().before(now);
         } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
             throw new JwtException("TOKEN_INVALID");
         } catch (ExpiredJwtException e) {

@@ -5,9 +5,11 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -40,7 +42,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getEmail(); // email을 username으로 사용
+        return String.valueOf(this.user.getId());
     }
 
     @Override
@@ -68,4 +70,5 @@ public class CustomUserDetails implements UserDetails {
         // 0: 활성, 1: 탈퇴, 2: 휴면
         return user.getUserStatus() != null && user.getUserStatus() == 0;
     }
+
 }

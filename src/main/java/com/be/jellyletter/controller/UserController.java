@@ -35,9 +35,9 @@ public class UserController {
 
     // 토큰 재발급
     @PostMapping("/login/refresh-token")
-    public ResponseEntity<TokenResDto> refreshToken(@RequestBody Map<String, String> refreshToken) {
+    public ResponseEntity<TokenResDto> refreshToken(@RequestBody String refreshToken) {
         // Refresh Token 검증
-        String recreatedAccessToken = jwtService.validateRefreshToken(refreshToken.get("refreshToken"));
+        String recreatedAccessToken = jwtService.validateRefreshToken(refreshToken);
 
         // Access Token 재발급
         TokenResDto responseDto = TokenResDto.builder()

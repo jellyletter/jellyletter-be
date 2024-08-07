@@ -39,6 +39,6 @@ public class JwtService {
 
     private RefreshToken getRefreshToken(String refreshToken) {
         return refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new JwtException("TOKEN_INVALID"));
+                .orElseThrow(() -> new JwtException("REFRESH TOKEN NOT FOUND"));
     }
 }
