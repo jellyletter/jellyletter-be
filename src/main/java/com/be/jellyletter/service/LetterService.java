@@ -3,6 +3,7 @@ package com.be.jellyletter.service;
 import com.be.jellyletter.converter.LetterConverter;
 import com.be.jellyletter.dto.requestDto.LetterReqDto;
 import com.be.jellyletter.dto.responseDto.LetterResDto;
+import com.be.jellyletter.dto.responseDto.PetResDto;
 import com.be.jellyletter.enums.Species;
 import com.be.jellyletter.model.Letter;
 import com.be.jellyletter.model.Pet;
@@ -65,13 +66,23 @@ public class LetterService {
         return LetterConverter.entityToDto(letter);
     }
 
-    public List<LetterResDto> getAllUserPetLetters(Integer petId) {
-        List<Letter> userPetLetters = letterRepository.findAllByPetId(petId);
+    public List<LetterResDto> getAllUserPetLetters(PetResDto petDto) {
+        List<Letter> userPetLetters = letterRepository.findAllByPetId(petDto.getId());
         if (userPetLetters.isEmpty()) {
-            throw new NoSuchElementException("Letter with PetId: " + petId + " not found");
+            throw new NoSuchElementException("Letter with PetId: " + petDto.getId() + " not found");
         }
 
-        return userPetLetters.stream()
+        List<Letter> replacedUserPerLetters = new ArrayList<>();
+        for (Letter userPetLetter : userPetLetters) {
+            PetAiImage petAiImage = userPetLetter.getPetAiImage();
+            if (petAiImage != null) {
+                PetAiImage newAiImage = replaceOwnerNickname(petAiImage, petDto.getOwnerNickname());
+                userPetLetter.updatePetAiImage(newAiImage);
+                replacedUserPerLetters.add(userPetLetter);
+            }
+        }
+
+        return replacedUserPerLetters.stream()
                 .map(LetterConverter::entityToDto)
                 .toList();
     }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "letter")
@@ -42,5 +43,9 @@ public class Letter {
 
     public void addPetAiImage(PetAiImage petAiImage) {
         this.petAiImage = petAiImage;
+    }
+
+    public void updatePetAiImage(PetAiImage newPetAiImage) {
+        this.petAiImage= newPetAiImage;
     }
 }
