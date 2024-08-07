@@ -39,12 +39,14 @@ public class UserService {
             User user = User.builder()
                     .username(loginReqDto.getName())
                     .userRole(Role.USER)
-                    .nickname(loginReqDto.getNickname())
                     .email(loginReqDto.getEmail())
-                    .userPhone(loginReqDto.getMobile())
                     .vendor(vendor)
                     .userStatus(0)
                     .build();
+
+            if (loginReqDto.getMobile() != null) {
+                user.addUserPhone(loginReqDto.getMobile());
+            }
 
             User savedUser = userRepository.save(user);
 

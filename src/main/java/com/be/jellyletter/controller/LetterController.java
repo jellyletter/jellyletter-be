@@ -1,6 +1,6 @@
 package com.be.jellyletter.controller;
 
-import com.be.jellyletter.auth.dto.CustomUserDetails;
+import com.be.jellyletter.auth.CustomUserDetails;
 import com.be.jellyletter.dto.requestDto.HumanLetterReqDto;
 import com.be.jellyletter.dto.requestDto.LetterReqDto;
 import com.be.jellyletter.dto.requestDto.PetIdReqDto;

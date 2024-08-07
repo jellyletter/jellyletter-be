@@ -25,13 +25,10 @@ public class User {
     @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "nickname", nullable = false)
-    private String nickname;
-
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "user_phone", nullable = false)
+    @Column(name = "user_phone", nullable = true)
     private String userPhone;
 
     @Enumerated(EnumType.STRING)
@@ -44,16 +41,17 @@ public class User {
 
     @Builder
     public User(
-            String username, Role userRole,
-            String nickname, String email, String userPhone, Oauth2Vendor vendor, Integer userStatus) {
+            String username, Role userRole,String email, Oauth2Vendor vendor, Integer userStatus) {
         this.username = username;
-        this.nickname = nickname;
         this.email = email;
-        this.userPhone = userPhone;
 
         this.vendor = vendor;
         this.userRole = userRole;
         this.userStatus = userStatus;
+    }
+
+    public void addUserPhone(String userPhone) {
+        this.userPhone = userPhone;
     }
 
 }

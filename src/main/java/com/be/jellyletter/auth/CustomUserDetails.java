@@ -1,4 +1,4 @@
-package com.be.jellyletter.auth.dto;
+package com.be.jellyletter.auth;
 
 import com.be.jellyletter.model.User;
 import lombok.Getter;
