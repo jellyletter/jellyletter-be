@@ -14,17 +14,17 @@ public class PetAiImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
+    @Column(name = "image_id", insertable = false, updatable = false)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "species", nullable = false)
+    @Column(name = "species", nullable = false, insertable = false, updatable = false)
     private Species species;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url", nullable = false, insertable = false, updatable = false)
     private String imageUrl;
 
-    @Column(name = "message", nullable = false)
+    @Column(name = "message", nullable = false, insertable = false, updatable = false)
     private String message;
 
     public void updateMessage(String newMessage) {

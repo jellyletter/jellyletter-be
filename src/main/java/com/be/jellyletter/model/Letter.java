@@ -30,7 +30,7 @@ public class Letter {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id", nullable = false)
+    @JoinColumn(name = "image_id", nullable = false, updatable = false)
     private PetAiImage petAiImage;
 
     @Column(name = "share_key", nullable = false, unique = true)
