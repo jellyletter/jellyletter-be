@@ -3,6 +3,7 @@ package com.be.jellyletter.service;
 import com.be.jellyletter.converter.LetterConverter;
 import com.be.jellyletter.dto.requestDto.LetterReqDto;
 import com.be.jellyletter.dto.responseDto.LetterResDto;
+import com.be.jellyletter.dto.responseDto.PetAiImageResDto;
 import com.be.jellyletter.dto.responseDto.PetResDto;
 import com.be.jellyletter.enums.Species;
 import com.be.jellyletter.model.Letter;
@@ -46,14 +47,18 @@ public class LetterService {
         // 반려동물이 보내는 메세지에는 AI 이미지 포함
         if (letterReqDto.getTypeCode() == 0) {
             PetAiImage randomPetAiImage = getRandomNoDupPetAiImage(pet.getId(), pet.getSpecies());
-            PetAiImage replacedPetAiImage = replaceOwnerNickname(randomPetAiImage, pet.getOwnerNickname());
-            letter.addPetAiImage(replacedPetAiImage);
+            letter.addPetAiImage(randomPetAiImage);
         }
 
         Letter savedLetter = letterRepository.save(letter);
         entityManager.refresh(savedLetter);
 
-        return LetterConverter.entityToDto(letter);
+        LetterResDto letterResDto = LetterConverter.entityToDto(letter);
+
+        PetAiImageResDto imageResDto = replaceOwnerNickname(letterResDto.getPetAiImage(), pet.getOwnerNickname());
+        letterResDto.setPetAiImage(imageResDto);
+
+        return letterResDto;
     }
 
     public LetterResDto getLetterByShareKey(String shareKey) {
@@ -82,23 +87,22 @@ public class LetterService {
             throw new NoSuchElementException("Letter with PetId: " + petId + " not found");
         }
 
-        List<Letter> replacedUserPerLetters = new ArrayList<>();
+        List<LetterResDto> replacedUserPerLetters = new ArrayList<>();
         for (Letter userPetLetter : userPetLetters) {
-            PetAiImage petAiImage = userPetLetter.getPetAiImage();
-            if (petAiImage != null) {
+            LetterResDto letterDto = LetterConverter.entityToDto(userPetLetter);
+            PetAiImageResDto imageDto = letterDto.getPetAiImage();
+            if (imageDto != null) {
                 // 반려동물이 보낸 거면 메세지 내 호칭 변경해서 add
-                PetAiImage newAiImage = replaceOwnerNickname(petAiImage, ownerNickname);
-                userPetLetter.updatePetAiImage(newAiImage);
-                replacedUserPerLetters.add(userPetLetter);
+                PetAiImageResDto newImageDto = replaceOwnerNickname(imageDto, ownerNickname);
+                letterDto.setPetAiImage(newImageDto);
+                replacedUserPerLetters.add(letterDto);
             } else {
                 // 사람이 보낸 거면 호칭 변경 없이 add
-                replacedUserPerLetters.add(userPetLetter);
+                replacedUserPerLetters.add(letterDto);
             }
         }
 
-        return replacedUserPerLetters.stream()
-                .map(LetterConverter::entityToDto)
-                .toList();
+        return replacedUserPerLetters;
     }
 
     private PetAiImage getRandomNoDupPetAiImage(Integer petId, Species species) {
@@ -145,11 +149,11 @@ public class LetterService {
                 .orElseThrow(() -> new NoSuchElementException("PetAiImage not found with id: " + randomId));
     }
 
-    private PetAiImage replaceOwnerNickname(PetAiImage petAiImage, String ownerNickname) {
-        String originalMessage = petAiImage.getMessage();
+    private PetAiImageResDto replaceOwnerNickname(PetAiImageResDto petAiImageResDto, String ownerNickname) {
+        String originalMessage = petAiImageResDto.getMessage();
         String newMessage = originalMessage.replace("{{Owner}}", ownerNickname);
-        petAiImage.updateMessage(newMessage);
+        petAiImageResDto.setMessage(newMessage);
 
-        return petAiImage;
+        return petAiImageResDto;
     }
 }
