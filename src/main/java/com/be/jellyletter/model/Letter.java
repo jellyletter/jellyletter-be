@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "letter")
 @Getter
@@ -34,11 +36,22 @@ public class Letter {
     @Column(name = "share_key", nullable = false, unique = true)
     private String shareKey;
 
+    @Column(name = "created_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
     @Builder
     public Letter(Pet pet, Integer typeCode, String content) {
         this.pet = pet;
         this.typeCode = typeCode;
         this.content = content;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = new Date();
+        }
     }
 
     public void addPetAiImage(PetAiImage petAiImage) {

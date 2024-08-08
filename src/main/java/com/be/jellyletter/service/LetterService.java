@@ -77,7 +77,7 @@ public class LetterService {
         Integer petId = userPet.getPet().getId();
         String ownerNickname = userPet.getPet().getOwnerNickname();
 
-        List<Letter> userPetLetters = letterRepository.findAllByPetId(petId);
+        List<Letter> userPetLetters = letterRepository.findAllByPetIdOrderByCreatedAtDesc(petId);
         if (userPetLetters.isEmpty()) {
             throw new NoSuchElementException("Letter with PetId: " + petId + " not found");
         }
@@ -86,8 +86,12 @@ public class LetterService {
         for (Letter userPetLetter : userPetLetters) {
             PetAiImage petAiImage = userPetLetter.getPetAiImage();
             if (petAiImage != null) {
+                // 반려동물이 보낸 거면 메세지 내 호칭 변경해서 add
                 PetAiImage newAiImage = replaceOwnerNickname(petAiImage, ownerNickname);
                 userPetLetter.updatePetAiImage(newAiImage);
+                replacedUserPerLetters.add(userPetLetter);
+            } else {
+                // 사람이 보낸 거면 호칭 변경 없이 add
                 replacedUserPerLetters.add(userPetLetter);
             }
         }

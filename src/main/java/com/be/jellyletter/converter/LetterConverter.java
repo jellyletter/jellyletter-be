@@ -17,6 +17,7 @@ public class LetterConverter {
         dto.setContent(letter.getContent());
         dto.setPetAiImage(petImgDto);
         dto.setShareKey(letter.getShareKey());
+        dto.setCreateAt(letter.getCreatedAt());
 
         return dto;
     }

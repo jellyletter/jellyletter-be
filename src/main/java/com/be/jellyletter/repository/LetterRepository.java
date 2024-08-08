@@ -12,5 +12,7 @@ public interface LetterRepository extends JpaRepository<Letter, Integer> {
     Optional<Letter> findByShareKey(String shareKey);
     @Query(value = "SELECT * FROM letter WHERE pet_id = :petId AND type_code = :typeCode ORDER BY created_at DESC LIMIT 1", nativeQuery = true)
     Optional<Letter> findTopByPetIdAAndTypeCodeOrderByCreatedDateDesc(@Param("petId") Integer petId, @Param("typeCode") Integer typeCode);
+    List<Letter> findAllByPetIdOrderByCreatedAtDesc(Integer petId);
+
     List<Letter> findAllByPetId(Integer petId);
 }
