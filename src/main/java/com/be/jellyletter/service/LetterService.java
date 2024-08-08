@@ -147,7 +147,7 @@ public class LetterService {
 
     private PetAiImage replaceOwnerNickname(PetAiImage petAiImage, String ownerNickname) {
         String originalMessage = petAiImage.getMessage();
-        String newMessage = originalMessage.replace("{{주인을 부르는 방식}}", ownerNickname);
+        String newMessage = originalMessage.replace("{{Owner}}", ownerNickname);
         petAiImage.updateMessage(newMessage);
 
         return petAiImage;
