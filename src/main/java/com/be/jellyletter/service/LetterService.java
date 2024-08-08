@@ -46,19 +46,14 @@ public class LetterService {
         // 반려동물이 보내는 메세지에는 AI 이미지 포함
         if (letterReqDto.getTypeCode() == 0) {
             PetAiImage randomPetAiImage = getRandomNoDupPetAiImage(pet.getId(), pet.getSpecies());
-            letter.addPetAiImage(randomPetAiImage);
+            PetAiImage replacedPetAiImage = replaceOwnerNickname(randomPetAiImage, pet.getOwnerNickname());
+            letter.addPetAiImage(replacedPetAiImage);
         }
 
         Letter savedLetter = letterRepository.save(letter);
         entityManager.refresh(savedLetter);
 
-        // 반려동물이 보내는 메세지에는 호칭 변경
-        if (letterReqDto.getTypeCode() == 0) {
-            PetAiImage replacedPetAiImage = replaceOwnerNickname(letter.getPetAiImage(), pet.getOwnerNickname());
-            savedLetter.addPetAiImage(replacedPetAiImage);
-        }
-
-        return LetterConverter.entityToDto(savedLetter);
+        return LetterConverter.entityToDto(letter);
     }
 
     public LetterResDto getLetterByShareKey(String shareKey) {
