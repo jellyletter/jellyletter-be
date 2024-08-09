@@ -50,13 +50,18 @@ public class LetterService {
             letter.addPetAiImage(randomPetAiImage);
         }
 
+        // 저장
         Letter savedLetter = letterRepository.save(letter);
         entityManager.refresh(savedLetter);
 
+        // dto 로 변환
         LetterResDto letterResDto = LetterConverter.entityToDto(letter);
 
-        PetAiImageResDto imageResDto = replaceOwnerNickname(letterResDto.getPetAiImage(), pet.getOwnerNickname());
-        letterResDto.setPetAiImage(imageResDto);
+        // 반려동물이 보내는 메세지에는 호칭 변경
+        if (letterResDto.getTypeCode() == 0) {
+            PetAiImageResDto imageResDto = replaceOwnerNickname(letterResDto.getPetAiImage(), pet.getOwnerNickname());
+            letterResDto.setPetAiImage(imageResDto);
+        }
 
         return letterResDto;
     }
