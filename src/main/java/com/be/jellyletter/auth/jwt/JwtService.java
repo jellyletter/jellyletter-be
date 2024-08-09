@@ -31,7 +31,7 @@ public class JwtService {
         String createdAccessToken = jwtTokenProvider.validateRefreshToken(getRefreshToken);
 
         if (createdAccessToken == null) {
-            throw new JwtException("TOKEN_EXPIRED");
+            throw new JwtAuthenticationException("TOKEN_EXPIRED");
         }
 
         return createdAccessToken;

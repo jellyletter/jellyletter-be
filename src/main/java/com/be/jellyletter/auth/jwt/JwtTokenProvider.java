@@ -125,9 +125,9 @@ public class JwtTokenProvider {
             Date now = new Date();
             return !claims.getBody().getExpiration().before(now);
         } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-            throw new JwtException("TOKEN_INVALID");
-        } catch (ExpiredJwtException e) {
-            throw new JwtException("TOKEN_EXPIRED");
+            throw new JwtAuthenticationException("TOKEN_INVALID");
+        } catch (Exception e) {
+            throw new JwtAuthenticationException("TOKEN_EXPIRED");
         }
     }
 
@@ -161,7 +161,7 @@ public class JwtTokenProvider {
             return (expiration.getTime() - now);
 
         } catch (Exception e) {
-            throw new JwtException("TOKEN_EXPIRED");
+            throw new JwtAuthenticationException("TOKEN_EXPIRED");
         }
     }
 
