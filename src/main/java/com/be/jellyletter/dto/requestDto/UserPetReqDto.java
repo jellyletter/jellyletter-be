@@ -20,10 +20,7 @@ public class UserPetReqDto {
     private Integer petId;
 
     public UserPet dtoToEntity(User user, Pet pet) {
-        UserPet.UserPetId userPetId = new UserPet.UserPetId(this.userId, this.petId);
-
         return UserPet.builder()
-                .id(userPetId)
                 .user(user)
                 .pet(pet)
                 .build();

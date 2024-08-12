@@ -14,8 +14,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class UserPet {
 
-    @EmbeddedId
-    private UserPetId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userPetId")
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "user_pet_ibfk_1"))
@@ -25,22 +27,13 @@ public class UserPet {
     @JoinColumn(name = "pet_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "user_pet_ibfk_2"))
     private Pet pet;
 
-    @Embeddable
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UserPetId implements Serializable {
-        @Column(name = "user_id", nullable = false)
-        private Integer userId;
-
-        @Column(name = "pet_id", nullable = false)
-        private Integer petId;
+    @Builder
+    public UserPet(User user, Pet pet) {
+        this.user = user;
+        this.pet = pet;
     }
 
-    @Builder
-    public UserPet(UserPetId id, User user, Pet pet) {
-        this.id = id;
-        this.user = user;
+    public void updatePet(Pet pet) {
         this.pet = pet;
     }
 
