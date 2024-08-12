@@ -135,7 +135,7 @@ public class LetterController {
 
     @GetMapping("/user-pet")
     @Operation(summary = "유저 - 반려동물 간 주고 받은 편지 조회 API", description = "로그인 정보로 유저 확인하고, petId로 반려동물 정보를 조회하여 주고받은 편지 내역 전체를 반환합니다.")
-    public List<LetterResDto> getAllUserPetLetters(
+    public ResponseEntity<List<LetterResDto>> getAllUserPetLetters(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         // 유저 정보 확인
@@ -148,6 +148,6 @@ public class LetterController {
         // 우선 유저에게 반려동물이 1 마리만 있는 상태라 유저에게 연결된 반려동물 편지 모두 조회
         List<LetterResDto> responseDto = letterService.getAllUserPetLetters(user.getId());
 
-        return responseDto;
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

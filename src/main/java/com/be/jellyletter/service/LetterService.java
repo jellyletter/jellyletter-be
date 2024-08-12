@@ -94,14 +94,15 @@ public class LetterService {
 
         List<LetterResDto> replacedUserPerLetters = new ArrayList<>();
         for (Letter userPetLetter : userPetLetters) {
+            // entity to dto 변환
             LetterResDto letterDto = LetterConverter.entityToDto(userPetLetter);
             PetAiImageResDto imageDto = letterDto.getPetAiImage();
-            if (imageDto != null) {
+            if (letterDto.getTypeCode() == 0) {
                 // 반려동물이 보낸 거면 메세지 내 호칭 변경해서 add
                 PetAiImageResDto newImageDto = replaceOwnerNickname(imageDto, ownerNickname);
                 letterDto.setPetAiImage(newImageDto);
                 replacedUserPerLetters.add(letterDto);
-            } else {
+            } else if (letterDto.getTypeCode() == 1) {
                 // 사람이 보낸 거면 호칭 변경 없이 add
                 replacedUserPerLetters.add(letterDto);
             }
