@@ -20,11 +20,11 @@ public class UserPet {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "user_pet_ibfk_1"))
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "user_pet_ibfk_1"))
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pet_id", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "user_pet_ibfk_2"))
+    @JoinColumn(name = "pet_id", foreignKey = @ForeignKey(name = "user_pet_ibfk_2"))
     private Pet pet;
 
     @Builder
